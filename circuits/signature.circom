@@ -26,6 +26,26 @@ template Sign() {
     mSquared <== m * m;
 }
 
+template GroupSign(n) {
+    signal input sk;
+    signal input pk[n]; // indicate all the public keys in the group
+    signal input m;
+
+    // get the corresponding public key to the secret key
+    component computePk = SecretToPublic();
+    computePk.sk <== sk;
+
+    // make sure that computePk.pk exists in the pk array
+    signal zeroChecker[n+1];
+    zeroChecker[0] <== 1;
+    for (var i = 0; i < n; i++) {
+        zeroChecker[i+1] <== zeroChecker[i] * (pk[i] - computePk.pk);
+    }
+    // at some point in the for loop, if pk[i] is equal to computePk.pk
+    // zeroChecker[i+1] will become zero
+    zeroChecker[n] === 0;
+}
+
 // the proof itself is the signature
 // because the prover has access to the correct secret key
-component main { public [m, pk] } = Sign();
+component main { public [m, pk] } = GroupSign(5);
