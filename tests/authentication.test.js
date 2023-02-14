@@ -26,17 +26,11 @@ describe('Authentication test', () => {
             address: address,
         })
 
-        console.log("Circuit inputs: ", circuitInputs);
-
         // Generate the witness
         const witness = await callGenWitness(circuit, circuitInputs)
 
-        console.log("Witness: ", witness);
-
         // Get the nullifier from the witness
         const nullifier = await callGetSignalByName(circuit, witness, 'main.nullifier')
-
-        console.log("Nullifier: ", nullifier.toString());
 
         // Check that the nullifier is correct
         const expectedNullifier = poseidon.F.toObject(
