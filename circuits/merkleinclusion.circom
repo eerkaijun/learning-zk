@@ -42,4 +42,4 @@ template MerkleTreeInclusionProof(nLevels) {
     root === hashes[nLevels];
 }
 
-component main { public [leaf,root] } = MerkleTreeInclusionProof(5);
+component main { public [leaf,root] } = MerkleTreeInclusionProof(2);
