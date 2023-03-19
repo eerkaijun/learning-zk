@@ -1,8 +1,8 @@
 const builder = require('./witness_calculator');
 const snarkjs = require('snarkjs');
 
-const zkeyPath = './zkeys/authentication__prod.0.zkey'
-const wasmPath = './zkeys/authentication__prod.wasm'
+const zkeyPath = 'http://127.0.0.1:8000/authentication__prod.0.zkey'
+const wasmPath = 'http://127.0.0.1:8000/authentication__prod.wasm'
 
 const calculateProof = async (
     address,
@@ -31,8 +31,12 @@ const calculateProof = async (
 
     const start = Date.now()
     const { proof, publicSignals } =
-        await groth16.prove(new Uint8Array(zkeyBuff), wtnsBuff, null)
+        await snarkjs.groth16.prove(new Uint8Array(zkeyBuff), wtnsBuff, null)
     const end = Date.now()
+    const timeTaken = ((end - start) / 1000).toString() + ' seconds'
+
+    const timeComponent = document.getElementById('time')
+    timeComponent.innerHTML = timeTaken
 }
 
 const main = async () => {
