@@ -1,11 +1,5 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). This is to experiment with ZK proof generation on the frontend.
+# Getting Started 
 
-## Getting Started
+This frontend is to experiment with ZK proof generation in browser.
 
-First, run the development server:
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run `npm start` to start development server at [http://localhost:3000](http://localhost:3000).
