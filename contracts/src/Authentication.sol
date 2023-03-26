@@ -6,9 +6,9 @@ import "./Verifier.sol";
 contract Authentication is Verifier {
 
     mapping(address => bytes32) public nullifiers;
-    bytes32 public hashedSecret;
+    bytes public hashedSecret;
 
-    constructor(bytes32 _hashedSecret) {
+    constructor(bytes memory _hashedSecret) {
         hashedSecret = _hashedSecret;
     }
 
@@ -17,10 +17,10 @@ contract Authentication is Verifier {
         uint[2][2] memory b,
         uint[2] memory c,
         uint[3] memory input
-    ) external {
+    ) external returns (bool result) {
         uint nullifier = input[2];
         require(nullifiers[msg.sender] != bytes32(nullifier), "Already authenticated");
         nullifiers[msg.sender] = bytes32(nullifier);
-        verifyProof(a, b, c, input);
+        result = verifyProof(a, b, c, input);
     }
 }
