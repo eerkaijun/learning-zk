@@ -1,5 +1,6 @@
 const builder = require('./witness_calculator');
 const snarkjs = require('snarkjs');
+const ethers = require('ethers');
 
 const zkeyPath = 'http://127.0.0.1:8000/authentication__prod.0.zkey'
 const wasmPath = 'http://127.0.0.1:8000/authentication__prod.wasm'
@@ -34,9 +35,68 @@ const calculateProof = async (
         await snarkjs.groth16.prove(new Uint8Array(zkeyBuff), wtnsBuff, null)
     const end = Date.now()
     const timeTaken = ((end - start) / 1000).toString() + ' seconds'
-
     const timeComponent = document.getElementById('time')
     timeComponent.innerHTML = timeTaken
+
+    const nullifier = document.getElementById("nullifier")
+    nullifier.innerHTML = BigInt(publicSignals[2]).toString()
+
+    console.log("Proof: ", proof)
+    console.log("Public signals: ", publicSignals)
+
+    // Verify the proof from the smart contract
+    const provider = await ethers.getDefaultProvider("goerli")
+    const contractABI = [
+        {
+          "inputs": [
+            {
+              "internalType": "uint256[2]",
+              "name": "a",
+              "type": "uint256[2]"
+            },
+            {
+              "internalType": "uint256[2][2]",
+              "name": "b",
+              "type": "uint256[2][2]"
+            },
+            {
+              "internalType": "uint256[2]",
+              "name": "c",
+              "type": "uint256[2]"
+            },
+            {
+              "internalType": "uint256[3]",
+              "name": "input",
+              "type": "uint256[3]"
+            }
+          ],
+          "name": "verifyProof",
+          "outputs": [
+            {
+              "internalType": "bool",
+              "name": "r",
+              "type": "bool"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
+        }
+    ]
+    const verifier = new ethers.Contract(
+        "0x5Bc073B57038086BF294DC9594D9857247506D7C",
+        contractABI,
+        provider
+    )
+    console.log("Breakpoint1")
+    console.log("Verifier: ", verifier)
+
+    const result = await verifier.verifyProof(
+        proof.pi_a.slice(0, 2),
+        proof.pi_b.slice(0, 2),
+        proof.pi_c.slice(0, 2),
+        publicSignals
+    )
+    console.log("Verification result: ", result)
 }
 
 const main = async () => {
