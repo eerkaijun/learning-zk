@@ -41,9 +41,6 @@ const calculateProof = async (
     const nullifier = document.getElementById("nullifier")
     nullifier.innerHTML = BigInt(publicSignals[2]).toString()
 
-    console.log("Proof: ", proof)
-    console.log("Public signals: ", publicSignals)
-
     // Verify the proof from the smart contract
     const provider = await ethers.getDefaultProvider("goerli")
     const contractABI = [
@@ -87,8 +84,6 @@ const calculateProof = async (
         contractABI,
         provider
     )
-    console.log("Breakpoint1")
-    console.log("Verifier: ", verifier)
 
     const result = await verifier.verifyProof(
         proof.pi_a.slice(0, 2),
